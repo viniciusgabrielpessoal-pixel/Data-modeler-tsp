@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unificador LATAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ── TOKENS ──────────────────────────────────────────────── */
+:root {
+  --y1: #FFCC00;
+  --y2: #FFE066;
+  --y3: #FFF8D0;
+  --y4: #FFFDF0;
+  --r1: #C8040F;
+  --r2: #E8050F;
+  --r3: #fde8e9;
+  --g1: #166534;
+  --g2: #22c55e;
+  --g3: #dcfce7;
+  --bg: #F8F6EF;
+  --surface: #FFFFFF;
+  --border: #EAE0B8;
+  --border2: #F0E8C8;
+  --text: #1C1A14;
+  --text2: #6B5F30;
+  --text3: #9B8C50;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-xs: 5px;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Consolas', monospace;
+  --transition: .18s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+header {
+  background: linear-gradient(105deg, var(--y1) 0%, var(--y2) 60%, #FFF0A0 100%);
+  border-bottom: 2.5px solid var(--r1);
+  padding: 0 clamp(16px, 4vw, 40px);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(200,4,15,.12);
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.logo-box {
+  width: 36px; height: 36px;
+  background: var(--r1);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(200,4,15,.3);
+}
+.logo-box svg { width: 20px; height: 20px; fill: #fff; }
+.header-title { font-size: 1.1rem; font-weight: 800; color: var(--r1); letter-spacing: -0.03em; }
+.header-sub { font-size: 0.72rem; color: var(--text2); font-weight: 500; margin-top: 1px; }
+.header-badges {
+  margin-left: auto;
+  display: flex; gap: 6px; align-items: center;
+  flex-wrap: wrap;
+}
+.badge {
+  background: rgba(200,4,15,.1);
+  color: var(--r1);
+  border: 1px solid rgba(200,4,15,.2);
+  border-radius: 99px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.page {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 32px) 64px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.sidebar { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 80px; }
+.main-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+/* ── CARD ────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+.card-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--border2);
+  background: linear-gradient(to bottom, #FFFEF8, var(--surface));
+}
+.card-icon {
+  width: 28px; height: 28px;
+  background: var(--y3);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.card-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text2);
+}
+.card-body { padding: 16px 18px; }
+
+/* ── FORM ────────────────────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 0.75rem; font-weight: 600; color: var(--text2); }
+.field input[type="text"] {
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.field input[type="text"]:focus {
+  border-color: var(--y1);
+  box-shadow: 0 0 0 3px rgba(255,204,0,.2);
+}
+.hint { font-size: 0.72rem; color: var(--text3); line-height: 1.4; margin-top: 4px; }
+.hint code { background: var(--y3); padding: 1px 4px; border-radius: 3px; font-family: var(--mono); font-size: 0.7rem; }
+
+/* ── DROP ZONE ───────────────────────────────────────────── */
+.drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  background: var(--y4);
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
+  position: relative;
+}
+.drop-zone:hover, .drop-zone.dragover {
+  border-color: var(--y1);
+  background: var(--y3);
+  transform: scale(1.01);
+}
+.drop-zone input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+}
+.drop-icon { font-size: 2rem; margin-bottom: 6px; display: block; }
+.drop-label { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
+.drop-hint { font-size: 0.72rem; color: var(--text3); margin-top: 3px; }
+
+/* ── FILE LIST ───────────────────────────────────────────── */
+#file-list { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+#file-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--y3);
+  border: 1px solid var(--border2);
+  font-size: 0.78rem;
+  color: var(--text2);
+  animation: slideIn .15s ease;
+}
+#file-list li .fname { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--text); }
+#file-list li .fsize { font-size: 0.7rem; color: var(--text3); flex-shrink: 0; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 11px 16px;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 0.88rem; font-weight: 700; font-family: var(--font);
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  letter-spacing: 0.01em;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+
+.btn-primary {
+  background: var(--r1);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(200,4,15,.25);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--r2);
+  box-shadow: 0 4px 16px rgba(200,4,15,.35);
+}
+.btn-secondary {
+  background: var(--y3);
+  color: var(--text2);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover:not(:disabled) { background: var(--y2); border-color: var(--y1); }
+
+.btn-download {
+  background: var(--g1);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(22,101,52,.2);
+}
+.btn-download:hover:not(:disabled) {
+  background: #14532d;
+  box-shadow: 0 4px 16px rgba(22,101,52,.3);
+}
+
+/* ── SPINNER BOTÃO ───────────────────────────────────────── */
+.spin-ring {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2.5px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── DE-PARA TABLE ───────────────────────────────────────── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.dp-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 520px; }
+.dp-table thead th {
+  background: linear-gradient(to bottom, var(--y2), var(--y1));
+  color: var(--text);
+  font-weight: 700;
+  text-align: left;
+  padding: 9px 10px;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 2px solid rgba(200,4,15,.15);
+}
+.dp-table tbody tr { transition: background var(--transition); }
+.dp-table tbody tr:nth-child(even) { background: var(--y4); }
+.dp-table tbody tr:hover { background: var(--y3); }
+.dp-table tbody td { padding: 0; border-bottom: 1px solid var(--border2); }
+.dp-table tbody td input {
+  width: 100%; border: none; background: transparent;
+  padding: 7px 10px; font-size: 0.8rem; font-family: var(--font);
+  color: var(--text); outline: none;
+  transition: background var(--transition);
+}
+.dp-table tbody td input:focus { background: #fffbe6; }
+.dp-table tbody td.td-del { width: 36px; text-align: center; }
+.dp-table tbody td.td-del button {
+  background: none; border: none; cursor: pointer;
+  color: var(--text3); font-size: 0.9rem; line-height: 1;
+  padding: 4px; border-radius: 4px;
+  transition: color var(--transition), background var(--transition);
+}
+.dp-table tbody td.td-del button:hover { color: var(--r1); background: var(--r3); }
+
+.btn-add-row {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 8px;
+  background: none; border: 1.5px dashed var(--border);
+  color: var(--text3); border-radius: var(--radius-xs);
+  padding: 7px 12px; font-size: 0.78rem; font-family: var(--font);
+  cursor: pointer; width: 100%;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.btn-add-row:hover { border-color: var(--y1); color: var(--text2); background: var(--y4); }
+
+/* ── METRICS ─────────────────────────────────────────────── */
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 10px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.metric::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--y1), var(--r1));
+}
+.metric-value { font-size: 1.55rem; font-weight: 800; color: var(--r1); line-height: 1; }
+.metric-label { font-size: 0.68rem; color: var(--text3); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── RESULT HEADER ───────────────────────────────────────── */
+.result-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.result-badge {
+  background: var(--g3); color: var(--g1);
+  border: 1px solid #bbf7d0;
+  border-radius: 99px; padding: 3px 10px;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+/* ── PREVIEW TABLE ───────────────────────────────────────── */
+.preview-wrap {
+  overflow: auto; max-height: 320px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.preview-wrap table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+.preview-wrap thead th {
+  position: sticky; top: 0; z-index: 2;
+  background: linear-gradient(to bottom, var(--y2), var(--y1));
+  color: var(--text);
+  font-weight: 700; font-size: 0.68rem;
+  text-align: left; padding: 8px 9px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 2px solid rgba(200,4,15,.15);
+  white-space: nowrap;
+}
+.preview-wrap tbody tr:nth-child(even) { background: var(--y4); }
+.preview-wrap tbody tr:hover { background: var(--y3); }
+.preview-wrap tbody td { padding: 5px 9px; white-space: nowrap; border-bottom: 1px solid var(--border2); color: var(--text); }
+
+/* ── LOG ─────────────────────────────────────────────────── */
+.log-wrap {
+  background: #111;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: #a3e6a3;
+}
+.log-wrap::-webkit-scrollbar { width: 5px; }
+.log-wrap::-webkit-scrollbar-track { background: #1a1a1a; }
+.log-wrap::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* ── OVERLAY ─────────────────────────────────────────────── */
+#overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,8,0,.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  align-items: center; justify-content: center;
+}
+#overlay.on { display: flex; }
+.ov-card {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 40px 44px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  min-width: 290px; max-width: 380px;
+  border-top: 4px solid var(--r1);
+  animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn { from { opacity: 0; transform: scale(.92) translateY(8px); } to { opacity: 1; transform: none; } }
+.ov-ring {
+  width: 56px; height: 56px;
+  border: 4px solid var(--y3);
+  border-top-color: var(--r1);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 18px;
+}
+.ov-title { font-size: 1.05rem; font-weight: 800; color: var(--r1); margin-bottom: 5px; }
+.ov-sub { font-size: 0.8rem; color: var(--text2); }
+.ov-files { margin-top: 14px; font-size: 0.74rem; color: var(--text3); line-height: 1.7; max-width: 260px; word-break: break-all; }
+.ov-dots::after { content: ''; animation: dots 1.2s steps(4,end) infinite; }
+@keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} 100%{content:''} }
+
+/* ── TOAST ───────────────────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 24px; right: 24px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 0.84rem; font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  transform: translateY(8px);
+  z-index: 9998;
+  display: flex; align-items: center; gap: 8px;
+  max-width: 320px;
+}
+#toast.show { opacity: 1; transform: none; }
+#toast.ok { background: var(--g1); color: #fff; }
+#toast.erro { background: var(--r1); color: #fff; }
+
+/* ── DIVIDER ─────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border2); margin: 4px 0; }
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+.empty {
+  text-align: center; padding: 40px 20px;
+  color: var(--text3); font-size: 0.82rem;
+}
+.empty-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; opacity: .5; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .page { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .header-badges { display: none; }
+}
+@media (max-width: 480px) {
+  header { height: auto; padding: 14px 16px; }
+  .metrics { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .metric-value { font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- OVERLAY -->
+<div id="overlay">
+  <div class="ov-card">
+    <div class="ov-ring"></div>
+    <div class="ov-title">Processando<span class="ov-dots"></span></div>
+    <div class="ov-sub" id="ov-sub">Aguarde um momento</div>
+    <div class="ov-files" id="ov-files"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-logo">
+    <div class="logo-box">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h12v2H3v-2zm14 0l3 3-3 3v-2h-3v-2h3v-2z"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">Unificador LATAM</div>
+      <div class="header-sub">DFN Supply Chain · Skelt</div>
+    </div>
+  </div>
+  <div class="header-badges">
+    <span class="badge">Correios</span>
+    <span class="badge">Jadlog</span>
+    <span class="badge">Total Express</span>
+  </div>
+</header>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Configuração -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">⚙️</div>
+        <span class="card-title">Configuração</span>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="field">
+          <label for="nome-saida">Nome do arquivo de saída</label>
+          <input type="text" id="nome-saida" value="Resultado_Unificado_Final.xlsx" />
+        </div>
+        <p class="hint">
+          Aceita: <code>Exp_*.xls(x)</code> <code>Performance*.xlsx</code> <code>.zip</code> <code>relatorio_*.csv</code>
+        </p>
+      </div>
+    </div>
+
+    <!-- Upload -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">📂</div>
+        <span class="card-title">Arquivos</span>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="drop-zone" id="drop-zone">
+          <input type="file" id="file-input" multiple accept=".xls,.xlsx,.csv,.zip,.html,.htm" />
+          <span class="drop-icon">📁</span>
+          <div class="drop-label">Clique ou arraste aqui</div>
+          <div class="drop-hint">XLS · XLSX · CSV · ZIP · HTML</div>
+        </div>
+        <ul id="file-list"></ul>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="card">
+      <div class="card-body" style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-primary" id="btn-processar">
+          <span id="btn-label">▶ Processar arquivos</span>
+          <div class="spin-ring" id="spinner"></div>
+        </button>
+        <button class="btn btn-secondary" id="btn-restaurar">↩ Restaurar de-para</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-col">
+
+    <!-- De-para -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🔁</div>
+        <span class="card-title">De-para de status</span>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table class="dp-table">
+            <thead>
+              <tr>
+                <th>Status Original</th>
+                <th>LATAM STATUS</th>
+                <th>SINAL</th>
+                <th>TÍTULO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="dp-body"></tbody>
+          </table>
+        </div>
+        <button class="btn-add-row" id="btn-add-row">
+          <span>＋</span> Adicionar linha
+        </button>
+      </div>
+    </div>
+
+    <!-- Resultado (oculto até processar) -->
+    <div id="resultado-section" style="display:none">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-icon">✅</div>
+          <span class="card-title">Resultado</span>
+          <span class="result-badge" id="result-badge" style="margin-left:auto"></span>
+        </div>
+        <div class="card-body">
+          <div class="metrics" id="metrics"></div>
+          <div class="preview-wrap" id="preview-wrap"></div>
+          <button class="btn btn-download" id="btn-download" style="margin-top:12px;">
+            ⬇ Baixar Excel consolidado
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div class="card" id="log-section" style="display:none">
+      <div class="card-head">
+        <div class="card-icon">🖥️</div>
+        <span class="card-title">Log de processamento</span>
+      </div>
+      <div class="card-body">
+        <div class="log-wrap" id="log-box"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── Estado ──────────────────────────────────────────────────
+let files = [];
+let dePara = {};
+let nomeSaida = "Resultado_Unificado_Final.xlsx";
+
+// ── Toast ────────────────────────────────────────────────────
+function toast(msg, tipo = "ok") {
+  const el = document.getElementById("toast");
+  el.textContent = tipo === "ok" ? "✓  " + msg : "✕  " + msg;
+  el.className = "show " + tipo;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = ""; }, 3500);
+}
+
+// ── Overlay ──────────────────────────────────────────────────
+function showOverlay(nomes) {
+  document.getElementById("ov-sub").textContent =
+    `Processando ${nomes.length} arquivo${nomes.length !== 1 ? "s" : ""}...`;
+  document.getElementById("ov-files").innerHTML =
+    nomes.map(n => `📄 ${n}`).join("<br>");
+  document.getElementById("overlay").classList.add("on");
+  document.body.style.overflow = "hidden";
+}
+function hideOverlay() {
+  document.getElementById("overlay").classList.remove("on");
+  document.body.style.overflow = "";
+}
+
+// ── De-para ──────────────────────────────────────────────────
+async function loadDePara() {
+  const res = await fetch("/api/de-para");
+  dePara = await res.json();
+  renderDePara();
+}
+
+function renderDePara() {
+  const tbody = document.getElementById("dp-body");
+  tbody.innerHTML = "";
+  for (const [k, v] of Object.entries(dePara))
+    tbody.appendChild(dpRow(k, v["LATAM STATUS"] || "", v.SINAL || "", v.TITULO || ""));
+}
+
+function dpRow(orig, latam, sinal, titulo) {
+  const tr = document.createElement("tr");
+  const f = (val) => String(val || "").replace(/"/g, "&quot;");
+  tr.innerHTML = `
+    <td><input type="text" value="${f(orig)}" placeholder="Status original" /></td>
+    <td><input type="text" value="${f(latam)}" placeholder="LATAM STATUS" /></td>
+    <td><input type="text" value="${f(sinal)}" placeholder="SINAL" /></td>
+    <td><input type="text" value="${f(titulo)}" placeholder="TITULO" /></td>
+    <td class="td-del"><button onclick="this.closest('tr').remove()" title="Remover">✕</button></td>`;
+  return tr;
+}
+
+function collectDePara() {
+  const result = {};
+  document.querySelectorAll("#dp-body tr").forEach(tr => {
+    const inp = tr.querySelectorAll("input");
+    const k = inp[0].value.trim();
+    if (!k) return;
+    result[k] = { "LATAM STATUS": inp[1].value.trim(), "SINAL": inp[2].value.trim(), "TITULO": inp[3].value.trim() };
+  });
+  return result;
+}
+
+document.getElementById("btn-add-row").addEventListener("click", () =>
+  document.getElementById("dp-body").appendChild(dpRow("", "TRANSITO", "OK", "TRANSITO")));
+
+document.getElementById("btn-restaurar").addEventListener("click", async () => {
+  const res = await fetch("/api/de-para/restaurar", { method: "POST" });
+  const d = await res.json();
+  dePara = d.de_para;
+  renderDePara();
+  toast("De-para restaurado.");
+});
+
+// ── Upload ────────────────────────────────────────────────────
+const dropZone = document.getElementById("drop-zone");
+const fileInput = document.getElementById("file-input");
+
+fileInput.addEventListener("change", () => { files = Array.from(fileInput.files); renderFiles(); });
+dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("dragover"); });
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragover"));
+dropZone.addEventListener("drop", e => {
+  e.preventDefault(); dropZone.classList.remove("dragover");
+  files = Array.from(e.dataTransfer.files); renderFiles();
+});
+
+function renderFiles() {
+  const ul = document.getElementById("file-list");
+  ul.innerHTML = "";
+  files.forEach(f => {
+    const li = document.createElement("li");
+    const size = f.size < 1024 ? f.size + " B"
+      : f.size < 1048576 ? (f.size/1024).toFixed(1) + " KB"
+      : (f.size/1048576).toFixed(1) + " MB";
+    li.innerHTML = `<span>📄</span><span class="fname">${f.name}</span><span class="fsize">${size}</span>`;
+    ul.appendChild(li);
+  });
+}
+
+// ── Processar ─────────────────────────────────────────────────
+document.getElementById("btn-processar").addEventListener("click", processar);
+
+async function processar() {
+  if (!files.length) { toast("Selecione ao menos um arquivo.", "erro"); return; }
+
+  nomeSaida = document.getElementById("nome-saida").value.trim() || "Resultado_Unificado_Final.xlsx";
+  showOverlay(files.map(f => f.name));
+  setBtnLoading(true);
+
+  const fd = new FormData();
+  fd.append("nome_saida", nomeSaida);
+  fd.append("de_para", JSON.stringify(collectDePara()));
+  files.forEach(f => fd.append("arquivos", f));
+
+  try {
+    const res = await fetch("/api/processar", { method: "POST", body: fd });
+    const d = await res.json();
+    hideOverlay();
+
+    if (!res.ok) {
+      toast(d.erro || "Erro ao processar.", "erro");
+      if (d.logs) showLog(d.logs);
+      return;
+    }
+
+    showMetrics(d);
+    showPreview(d.preview);
+    showLog(d.logs || []);
+    document.getElementById("resultado-section").style.display = "";
+    document.getElementById("resultado-section").scrollIntoView({ behavior: "smooth", block: "start" });
+    toast(`${d.registros.toLocaleString("pt-BR")} registros consolidados!`);
+  } catch (e) {
+    hideOverlay();
+    toast("Falha na requisição: " + e.message, "erro");
+  } finally {
+    setBtnLoading(false);
+  }
+}
+
+// ── Download ──────────────────────────────────────────────────
+document.getElementById("btn-download").addEventListener("click", async () => {
+  if (!files.length) { toast("Reprocesse antes de baixar.", "erro"); return; }
+  showOverlay(files.map(f => f.name));
+
+  const fd = new FormData();
+  fd.append("nome_saida", nomeSaida);
+  fd.append("de_para", JSON.stringify(collectDePara()));
+  files.forEach(f => fd.append("arquivos", f));
+
+  try {
+    const res = await fetch("/api/download", { method: "POST", body: fd });
+    hideOverlay();
+    if (!res.ok) { toast("Erro ao gerar download.", "erro"); return; }
+    const blob = await res.blob();
+    const a = Object.assign(document.createElement("a"), {
+      href: URL.createObjectURL(blob), download: nomeSaida
+    });
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast("Download iniciado!");
+  } catch (e) {
+    hideOverlay();
+    toast("Falha no download.", "erro");
+  }
+});
+
+// ── Helpers ───────────────────────────────────────────────────
+function setBtnLoading(on) {
+  document.getElementById("btn-label").style.display = on ? "none" : "";
+  document.getElementById("spinner").style.display = on ? "block" : "none";
+  document.getElementById("btn-processar").disabled = on;
+}
+
+function showMetrics({ registros, arquivos, regras }) {
+  document.getElementById("result-badge").textContent = "✓ Gerado";
+  document.getElementById("metrics").innerHTML = `
+    <div class="metric">
+      <div class="metric-value">${registros.toLocaleString("pt-BR")}</div>
+      <div class="metric-label">Registros</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">${arquivos}</div>
+      <div class="metric-label">Arquivos</div>
+    </div>
+    <div class="metric">
+      <div class="metric-value">${regras}</div>
+      <div class="metric-label">Regras</div>
+    </div>`;
+}
+
+function showPreview(rows) {
+  const wrap = document.getElementById("preview-wrap");
+  if (!rows?.length) {
+    wrap.innerHTML = `<div class="empty"><span class="empty-icon">📭</span>Sem dados para prévia.</div>`;
+    return;
+  }
+  const cols = Object.keys(rows[0]);
+  let h = `<table><thead><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>`;
+  rows.forEach(r => { h += `<tr>${cols.map(c => `<td>${r[c] ?? ""}</td>`).join("")}</tr>`; });
+  wrap.innerHTML = h + "</tbody></table>";
+}
+
+function showLog(logs) {
+  if (!logs.length) return;
+  document.getElementById("log-box").textContent = logs.join("\n");
+  document.getElementById("log-section").style.display = "";
+}
+
+loadDePara();
+</script>
+</body>
+</html>
